@@ -40,10 +40,23 @@ You will need to have the configuration for REST module as well. See `core/modul
 
 For testing, you can use cURL or some other HTTP client. Example for cURL to get the JSON representation:
 
-`curl -s -H 'Accept: application/json' http://example.com/node/1?_format=json`
+`curl -s http://example.com/node/1?_format=json`
 
 ## Create, Update, and Delete Operations for Entities
+
+### What is HAL?
+
+> HAL is a simple format that gives a consistent and easy way to hyperlink between resources in your API.
+
+\- [HAL Informal Specifications](http://stateless.co/hal_specification.html)
+
+Creating entities uses the verb POST. Requires `hal` and `basic_auth` (or some other authentication module). Using POST:
+
+`curl -s -H 'Content-Type: application/hal+json'`
 ## Using AngularJS to Manipulate Data
 ## Resources
 
-DI PA KO KABALO MAG UPDATE xD
+* [REST Documentation](https://www.drupal.org/documentation/modules/rest)
+* [The state of ReST in Headless Drupal 8](http://build2be.com/content/state-rest-headless-drupal-8)
+* [POST, PATCH and DELETE request with Drupal 8 REST services](http://tntfoss-vivekvpandya.rhcloud.com/node/40)
+* [An Introduction to RESTful Web Services in Drupal 8](https://dev.acquia.com/blog/introduction-restful-web-services-drupal-8)
