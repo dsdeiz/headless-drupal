@@ -31,12 +31,18 @@ Core in Drupal 8 provides 2 authentications:
 
 ## Using GET Operations for Entities to Retrieve Data
 
+### REST Configuration
+
+You will need to have the configuration for REST module as well. See `core/modules/rest/config/rest.settings.yml` for some basic configurations. You can also use `restui` contrib module to set these configurations.
+
+### Permission Configurations
+
 To allow GET Operations for entities in order to retrieve data, you will need to set the necessary permissions:
 
 * Access GET on Content Resource
 * View published content
 
-You will need to have the configuration for REST module as well. See `core/modules/rest/config/rest.settings.yml` for some basic configurations. You can also use `restui` contrib module to set these configurations.
+### Testing
 
 For testing, you can use cURL or some other HTTP client. Example for cURL to get the JSON representation:
 
@@ -50,10 +56,33 @@ For testing, you can use cURL or some other HTTP client. Example for cURL to get
 
 \- [HAL Informal Specifications](http://stateless.co/hal_specification.html)
 
-Creating entities uses the verb POST. Requires `hal` and `basic_auth` (or some other authentication module). Using POST:
+### Basic Authentication and HAL
 
-`curl -s -H 'Content-Type: application/hal+json'`
+Authentication and HAL are required for POST, PATCH, and DELETE verbs. Enable the modules:
+
+* `hal`
+* `basic_auth`
+
+Basic authentication is passing the `Authorization` header - `Authorization: Basic BASE64<user:password>`.
+
+### Testing
+
+#### Creating
+
+`curl -s -H 'Content-Type: application/hal+json' --user <user>:<password> http://example.com/entity/node '{ "_links": { "type": { "href": "http://example.com/rest/type/node/page" } }, "title": [ { "value": "Foobar" }]}'`
+
+#### Updating
+
+`curl -s --request PATCH -H 'Content-Type: application/hal+json' --user <user>:<password> http://example.com/node/1 '{ "_links": { "type": { "href": "http://example.com/rest/type/node/page" } }, "title": [ { "value": "Foobar" }], "body": [ { "value": "Test" } ] }'`
+
+#### Deleting
+
+`curl -s --request DELETE --user <user>:<password> http://example.com/node/1`
+
 ## Using AngularJS to Manipulate Data
+
+AJAX all things!
+
 ## Resources
 
 * [REST Documentation](https://www.drupal.org/documentation/modules/rest)

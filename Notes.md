@@ -4,7 +4,7 @@ I need to provide access permissions to anonymous users since there is an issue 
 
 CORS is not supported in core yet therefore the front end needs to be hosted on the same server as  our headless Drupal.
 
-POST, PATCH, and DELETE HTTP verbs require `hal+json` representation.
+POST, PATCH, and DELETE HTTP verbs require `hal+json` representation. No idea why it's using PUT instead of PATCH.
 
 Examples of browser extensions acting as HTTP Clients are Postman or Dev HTTP client.
 
@@ -14,7 +14,7 @@ Discuss only a single type of content entity specifically node.
 
 # What is HAL?
 
-I don't know. It's the Hypertext Application Language. The basic usage here is to allow linking to the other resources. Most likely for creating a relationship between resources. It has two reserved properties when creating a resource:
+I don't know. It's the Hypertext Application Language. The basic usage here is to allow linking to the other resources. Most likely for creating a relationship between resources. It has two reserved properties when calling a resource:
 
 * `_links`
 * `_embedded`
