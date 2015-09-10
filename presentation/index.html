@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Headless Drupal 8</title>
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/blood.css" id="theme">
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+    <style>
+      /* For the lulz. */
+      p.align-left {
+        text-align: left;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="reveal">
+      <div class="slides">
+        <section>
+          <h1>Headless Drupal 8</h1>
+        </section>
+
+        <section>
+          <h2>Introduction to REST<br />in Drupal 8</h2>
+        </section>
+
+        <section>
+          <h3>What is REST?</h3>
+        </section>
+
+        <section>
+          <blockquote>
+            <p>Web Services make it possible for other applications to read and update information on your site via the Web. REST is one of a number of different ways of making Web Services available on your site. In contrast to other techniques such as SOAP or XML-RPC, REST encourages developers to rely on HTTP methods (such as GET and POST) to operate on site resources.</p>
+          </blockquote>
+          <p><em>&mdash; <a href="https://www.drupal.org/documentation/modules/rest">REST Documentation</a></em></p>
+        </section>
+
+        <section>
+          <h3>REST in Drupal 8</h3>
+        </section>
+
+        <section>
+          <p class="align-left">The <code>rest</code> module provides resources which allows external applications to interact with Drupal.</p>
+          <p class="align-left">It also allows module developers to create their own resource to further extend how Drupal behaves when calling out those created resources.</p>
+        </section>
+
+        <section>
+          <p>The <code>rest</code> module has 4 HTTP verbs:</p>
+          <ul>
+            <li class="fragment">GET</li>
+            <li class="fragment">POST</li>
+            <li class="fragment">PATCH</li>
+            <li class="fragment">DELETE</li>
+          </ul>
+        </section>
+
+        <section>
+          <p>Core in Drupal 8 provides 2 representations:</p>
+          <ul>
+            <li class="fragment">JSON</li>
+            <li class="fragment">HAL (<code>hal</code>)</li>
+          </ul>
+        </section>
+
+        <section>
+          <p>Core in Drupal 8 provides 2 authentications:</p>
+          <ul>
+            <li>Cookie</li>
+            <li>Basic Authentication (<code>basic_auth</code>)</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2>Retrieve Operations for Entities</h2>
+        </section>
+
+        <section>
+          <h3>REST Configuration</h3>
+          <p class="align-left">Configuration for REST module is required.</p>
+          <p class="align-left">See <code>core/modules/rest/config/rest.settings.yml</code> for basic configurations.</p>
+          <p class="align-left"><code>restui</code> contrib module provides a UI to configure REST module.</p>
+        </section>
+
+        <section>
+          <h3>Permission Configurations</h3>
+          <p>To allow GET operations for entities in order to retrieve data, you will need to set the necessary permissions:</p>
+          <ul>
+            <li class="fragment">Access GET on Content Resource</li>
+            <li class="fragment">View published content</li>
+          </ul>
+        </section>
+
+        <section>
+          <h3>Testing</h3>
+          <p>For testing, you can use cURL or some other HTTP client. Example for cURL to get the JSON representation:</p>
+          <pre><code>curl -s http://example.com/node/1?_format=json</code></pre>
+        </section>
+
+        <section>
+          <h2>Create, Update, and Delete Operations for Entities</h2>
+        </section>
+
+        <section>
+          <h3>What is HAL?</h3>
+          <blockquote>
+            <p>HAL is a simple format that gives a consistent and easy way to hyperlink between resources in your API.</p>
+          </blockquote>
+          <p><em>&mdash; <a href="http://stateless.co/hal_specification.html">HAL Informal Specifications</a></em></p>
+        </section>
+
+        <section>
+          <h3>Basic Authentication and HAL</h3>
+          <p>Authentication and HAL are required for POST, PATCH, and DELETE verbs. Enable the modules:</p>
+          <ul>
+            <li class="fragment"><code>hal</code></li>
+            <li class="fragment"><code>basic_auth</code></li>
+          </ul>
+          <p class="fragment">Basic authentication is passing the <code>Authorization</code> header - <code>Authorization: Basic BASE64&lt;user:password&gt;</code>.</p>
+        </section>
+
+        <section>
+          <h3>Testing</h3>
+        </section>
+
+        <section>
+          <h4>Creating</h4>
+          <pre><code>
+          curl -s -H 'Content-Type: application/hal+json'\
+          --user &lt;user&gt;:&lt;password&gt;\
+          http://example.com/entity/&lt;entity_type&gt;\
+          '{
+             "_links": {
+               "type": {
+                 "href": "http://example.com/rest/type/&lt;entity_type&gt;/&lt;bundle&gt;"
+               }
+             },
+             "title": [
+               {
+                 "value": "Foobar"
+               }
+             ]
+          }'
+          </code></pre>
+        </section>
+
+        <section>
+          <h4>Updating</h4>
+          <pre><code>
+          curl -s --request PATCH\
+          -H 'Content-Type: application/hal+json'\
+          --user &lt;user&gt;:&lt;password&gt; http://example.com/node/&lt;nid&gt;\
+          '{
+             "_links": {
+               "type": {
+                  "href": "http://example.com/rest/type/&lt;entity_type&gt;/&lt;bundle&gt;"
+               }
+             },
+             "title": [
+               {
+                 "value": "Foobar"
+               }
+             ],
+             "body": [
+               {
+                 "value": "Test"
+               }
+             ]
+          }'
+          </code></pre>
+        </section>
+
+        <section>
+          <h4>Deleting</h4>
+          <pre><code>
+          curl -s --request DELETE\
+          --user &lt;user&gt;:&lt;password&gt; http://example.com/node/1
+          </code></pre>
+        </section>
+
+        <section>
+          <h2>Using AngularJS to Manipulate Data</h2>
+          <p><img src="http://i.imgur.com/grrkeNQ.png" alt="AJAX ALL THE THINGS" /></p>
+        </section>
+
+        <section>
+          <h2>Resources</h2>
+          <ul>
+            <li class="fragment"><a href="https://www.drupal.org/documentation/modules/rest">REST Documentation</a></li>
+            <li class="fragment"><a href="http://build2be.com/content/state-rest-headless-drupal-8">The state of ReST in Headless Drupal 8</a></li>
+            <li class="fragment"><a href="http://tntfoss-vivekvpandya.rhcloud.com/node/40">POST, PATCH and DELETE request with Drupal 8 REST services</a></li>
+            <li class="fragment"><a href="https://dev.acquia.com/blog/introduction-restful-web-services-drupal-8">An Introduction to RESTful Web Services in Drupal 8</a></li>
+          </ul>
+        </section>
+
+        <section>
+          <h1>FIN</h1>
+        </section>
+      </div>
+    </div>
+
+    <script src="lib/js/head.min.js"></script>
+    <script src="js/reveal.js"></script>
+
+    <script>
+      Reveal.initialize({
+        controls: false,
+        progress: true,
+        history: true,
+        center: true,
+        transition: 'slide',
+        dependencies: [
+          { src: 'plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+        ]
+      });
+    </script>
+  </body>
+</html>

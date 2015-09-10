@@ -37,7 +37,7 @@ You will need to have the configuration for REST module as well. See `core/modul
 
 ### Permission Configurations
 
-To allow GET Operations for entities in order to retrieve data, you will need to set the necessary permissions:
+To allow GET operations for entities in order to retrieve data, you will need to set the necessary permissions:
 
 * Access GET on Content Resource
 * View published content
